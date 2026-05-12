@@ -1,0 +1,159 @@
+.wrap { display: flex; flex-direction: column; gap: 16px; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn {
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn:hover { opacity: .82; }
+.btnPrimary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btnMail { background: var(--green); color: #fff; border-color: var(--green); }
+
+.sheet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  max-width: 860px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.sheetHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.sheetTitle { font-size: 28px; font-weight: 800; letter-spacing: .2em; color: var(--text); }
+
+.sheetMeta { font-size: 12px; color: var(--text2); text-align: right; line-height: 1.8; }
+
+.projectInfo {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.projectRow { display: flex; gap: 16px; margin-bottom: 4px; font-size: 13px; }
+.projectRow:last-child { margin-bottom: 0; }
+.projectLabel { min-width: 80px; color: var(--text2); font-weight: 600; }
+.projectValue { color: var(--text); font-weight: 500; }
+
+.grandTotal {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--accent-bg);
+  border: 1.5px solid #b8d0f8;
+  border-radius: var(--radius-md);
+  margin-bottom: 28px;
+}
+.grandLabel { font-size: 13px; font-weight: 700; color: var(--accent); }
+.grandValue { font-size: 30px; font-weight: 800; color: var(--accent); letter-spacing: -.01em; }
+.grandNote { font-size: 11px; color: var(--text2); }
+
+.section { margin-bottom: 24px; }
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.table th {
+  background: var(--surface2);
+  padding: 7px 10px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.table tr:hover td { background: var(--surface2); }
+
+.spec { color: var(--text3); font-size: 11px; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.tag {
+  display: inline-block;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.subtotalRow td { background: var(--accent-bg); font-weight: 700; border-top: 1.5px solid #c8d8f0; }
+.infoRow td { color: var(--text2); font-size: 11px; background: var(--surface2); }
+
+.totalTable {
+  margin-left: auto;
+  width: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+.totalRow:last-child { border-bottom: none; }
+.totalFinal {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  padding: 12px 16px;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.footerNote { font-size: 10px; color: var(--text3); font-weight: 400; margin-top: 6px; }
+
+@media (max-width: 640px) {
+  .sheet { padding: 20px 16px; }
+  .sheetHeader { flex-direction: column; gap: 8px; }
+  .grandTotal { flex-direction: column; gap: 4px; }
+  .grandValue { font-size: 22px; }
+  .totalTable { width: 100%; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  .sheet { border: none; padding: 20px; box-shadow: none; }
+  .wrap { gap: 0; }
+}

@@ -1,0 +1,224 @@
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 0 56px;
+}
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 56px 24px 48px;
+  border-bottom: 1px solid var(--border);
+}
+
+.heroTag {
+  display: inline-block;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 22px;
+}
+
+.heroTitle {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0 0 18px;
+}
+
+.accent { color: var(--accent); }
+
+.heroSub {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.75;
+  max-width: 580px;
+  margin: 0 auto 32px;
+}
+
+.ctaBtn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 13px 36px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: opacity .15s;
+  box-shadow: var(--shadow-md);
+}
+.ctaBtn:hover { opacity: .85; }
+
+.sampleLink {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ── Stats ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.statItem {
+  background: var(--surface);
+  text-align: center;
+  padding: 20px 12px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+/* ── Section ── */
+.section { padding: 44px 24px 0; }
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+/* ── Features ── */
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  transition: box-shadow .15s;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+.cardIcon {
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.cardTitle { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.cardDesc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ── Flow ── */
+.flow {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+
+.flowItem {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 22px 10px;
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  margin-right: 28px;
+}
+.flowItem:last-child { margin-right: 0; }
+
+.flowStep { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: .08em; margin-bottom: 8px; }
+.flowLabel { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.flowSub { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+.flowArrow {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--border2);
+  font-size: 18px;
+  font-weight: 300;
+}
+
+/* ── Before/After ── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.compareCol {
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  border: 1px solid var(--border);
+}
+
+.compareBefore { background: #fef2f2; border-color: #fecaca; }
+.compareAfter  { background: var(--green-bg); border-color: #86efac; }
+
+.compareLabel {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text2);
+  letter-spacing: .04em;
+}
+
+.compareItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.compareItem:last-child { margin-bottom: 0; }
+
+.xMark { color: #ef4444; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.checkMark { color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* ── CTA Bottom ── */
+.ctaArea { text-align: center; padding-top: 48px; }
+
+.ctaNote {
+  font-size: 12px;
+  color: var(--text3);
+  margin-bottom: 14px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .heroTitle { font-size: 22px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .features { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; gap: 10px; }
+  .flowItem { margin-right: 0; }
+  .flowArrow { display: none; }
+  .compare { grid-template-columns: 1fr; }
+}

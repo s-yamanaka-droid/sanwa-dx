@@ -1,0 +1,134 @@
+.wrap { display: flex; flex-direction: column; gap: 14px; }
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.filterBtn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 12px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.filterBtn:hover { background: var(--surface2); }
+.filterActive {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.toolbarRight { display: flex; align-items: center; gap: 12px; }
+
+.totalCost {
+  font-size: 13px;
+  color: var(--text2);
+}
+.totalCost strong { color: var(--text); font-size: 15px; }
+
+.exportBtn {
+  padding: 7px 14px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+}
+.exportBtn:hover { background: var(--surface2); }
+
+.tableWrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.table thead th {
+  background: var(--surface2);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table tbody tr { background: var(--surface); }
+.table tbody tr:hover { background: var(--surface2); }
+.table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.table tbody tr:last-child td { border-bottom: none; }
+
+.code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+.nameCell { min-width: 160px; }
+.name { font-weight: 500; color: var(--text); }
+
+.spec { font-size: 12px; color: var(--text2); min-width: 140px; }
+
+.qty { white-space: nowrap; font-size: 13px; }
+.qty strong { color: var(--text); }
+
+.catBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.price { color: var(--text2); white-space: nowrap; }
+
+.total {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.table tfoot td {
+  padding: 10px 12px;
+  background: var(--surface2);
+  border-top: 2px solid var(--border2);
+}
+
+.footLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  text-align: right;
+}
+
+.footTotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}

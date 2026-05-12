@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "project": "三和商研 スーパー什器レイアウト",
+    "date": "2026-04-27",
+    "area_sqm": 1818.21,
+    "area_tsubo": 550.01,
+    "notes": "カウンター27.82㎡を含む"
+  },
+  "zones": [
+    {
+      "id": "zone-food",
+      "name": "食品棚エリア",
+      "type": "general",
+      "color": "#f0ede8",
+      "x": 20, "y": 20, "w": 620, "h": 200
+    },
+    {
+      "id": "zone-fresh",
+      "name": "生鮮エリア",
+      "type": "fresh",
+      "color": "#e6f7f0",
+      "x": 20, "y": 234, "w": 300, "h": 160
+    },
+    {
+      "id": "zone-daily",
+      "name": "日用品エリア",
+      "type": "general",
+      "color": "#fdf0f8",
+      "x": 336, "y": 234, "w": 304, "h": 160
+    }
+  ],
+  "shelves": [
+    { "id": "S001", "zone": "zone-food", "x": 30,  "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品①" },
+    { "id": "S002", "zone": "zone-food", "x": 80,  "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品②" },
+    { "id": "S003", "zone": "zone-food", "x": 130, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品③" },
+    { "id": "S004", "zone": "zone-food", "x": 180, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品④" },
+    { "id": "S005", "zone": "zone-food", "x": 230, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑤" },
+    { "id": "S006", "zone": "zone-food", "x": 280, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑥" },
+    { "id": "S007", "zone": "zone-food", "x": 330, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑦" },
+    { "id": "S008", "zone": "zone-food", "x": 380, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑧" },
+    { "id": "S009", "zone": "zone-food", "x": 430, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑨" },
+    { "id": "S010", "zone": "zone-food", "x": 480, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑩" },
+    { "id": "S011", "zone": "zone-food", "x": 530, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑪" },
+    { "id": "S012", "zone": "zone-food", "x": 580, "y": 35,  "w": 18, "h": 170, "type": "SH-1950", "label": "食品⑫" },
+    { "id": "S013", "zone": "zone-fresh", "x": 30,  "y": 248, "w": 80, "h": 130, "type": "SH-1500W", "label": "生鮮①" },
+    { "id": "S014", "zone": "zone-fresh", "x": 130, "y": 248, "w": 80, "h": 130, "type": "SH-1500W", "label": "生鮮②" },
+    { "id": "S015", "zone": "zone-fresh", "x": 230, "y": 248, "w": 80, "h": 130, "type": "SH-1500W", "label": "生鮮③" },
+    { "id": "S016", "zone": "zone-daily", "x": 346, "y": 248, "w": 60, "h": 130, "type": "SH-1950", "label": "日用①" },
+    { "id": "S017", "zone": "zone-daily", "x": 416, "y": 248, "w": 60, "h": 130, "type": "SH-1950", "label": "日用②" },
+    { "id": "S018", "zone": "zone-daily", "x": 486, "y": 248, "w": 60, "h": 130, "type": "SH-1950", "label": "日用③" },
+    { "id": "S019", "zone": "zone-daily", "x": 556, "y": 248, "w": 60, "h": 130, "type": "SH-1950", "label": "日用④" }
+  ],
+  "parts": [
+    { "id": "SH-1950",  "name": "棚柱ユニット 1950H",   "spec": "1800H+在庫棚150H",   "qty": 47,  "unit": "本", "category": "主材",   "stock": 52,  "unit_price": 8800 },
+    { "id": "SH-970W",  "name": "棚板 970mm幅",         "spec": "スチール製 白塗装",  "qty": 188, "unit": "枚", "category": "主材",   "stock": 120, "unit_price": 2200 },
+    { "id": "SH-1500W", "name": "棚板 1500mm幅",        "spec": "スチール製 白塗装",  "qty": 94,  "unit": "枚", "category": "主材",   "stock": 30,  "unit_price": 3100 },
+    { "id": "BK-300",   "name": "ベースアンカー",        "spec": "M12×300mm",         "qty": 94,  "unit": "個", "category": "固定材", "stock": 94,  "unit_price": 450 },
+    { "id": "WR-24",    "name": "価格レール 24スロット", "spec": "標準型 ホワイト",    "qty": 282, "unit": "本", "category": "陳列部材","stock": 310, "unit_price": 380 },
+    { "id": "LB-STD",   "name": "棚番ラベルホルダー",    "spec": "A4横 透明",          "qty": 564, "unit": "個", "category": "陳列部材","stock": 200, "unit_price": 120 },
+    { "id": "BT-SET",   "name": "ボルト・ナットセット",  "spec": "M8×20mm 亜鉛メッキ","qty": 800, "unit": "組", "category": "締結材", "stock": 1200,"unit_price": 28 },
+    { "id": "FL-TAPE",  "name": "養生テープ",            "spec": "50mm×50m 緑",        "qty": 24,  "unit": "巻", "category": "施工材", "stock": 40,  "unit_price": 220 }
+  ],
+  "labor": {
+    "total_man_days": 28,
+    "crew_size": 8,
+    "estimated_days": 4,
+    "breakdown": [
+      { "task": "養生・搬入",     "man_days": 6 },
+      { "task": "棚柱組立",       "man_days": 12 },
+      { "task": "棚板取付・調整", "man_days": 7 },
+      { "task": "清掃・確認",     "man_days": 3 }
+    ]
+  }
+}
