@@ -8,22 +8,26 @@
 
 ## Supabase（重要・最初に読め）
 
+**新規DBは作らず、既存 trepro-pl プロジェクトに同居**（追加コスト¥0）
+
 | 項目 | 値 |
 |---|---|
-| プロジェクトID | `zxwqavoeaekeimacpbrr` |
-| URL | https://zxwqavoeaekeimacpbrr.supabase.co |
-| Region | ap-northeast-1（東京） |
-| 請求先 | トレプロ組織 / $10/月 |
-| 公開キー（anon） | `sb_publishable_jhzbNpqmR329zfsIZYE26g_1z8quvPr` |
+| プロジェクトID | `ooigquspvrnvnuxfnrxm`（trepro-pl 既存） |
+| URL | https://ooigquspvrnvnuxfnrxm.supabase.co |
+| Region | ap-southeast-1 |
+| 請求先 | トレプロ組織（既存プロジェクト・追加料金なし） |
+| 公開キー（anon） | `sb_publishable_7gGPRUmjqN-w-TpSnP5fOg_RN5aN2ED` |
 
-### テーブル構成
+### テーブル構成（`sanwa_` プレフィックスで分離）
 | テーブル | 役割 |
 |---|---|
-| `projects` | 案件マスタ（名前・売場面積・備考） |
-| `layouts` | 図面データ（zones/shelves/labor を JSONB） |
-| `parts` | 案件ごとの資材マスタ（cost_price は null許容） |
-| `order_history` | 発注履歴（items は JSONB） |
-| `settings` | グローバルKV（alertEmail / colFormat） |
+| `sanwa_projects` | 案件マスタ |
+| `sanwa_layouts` | 図面データ（zones/shelves/labor を JSONB） |
+| `sanwa_parts` | 案件ごとの資材マスタ（cost_price は null許容） |
+| `sanwa_order_history` | 発注履歴（items は JSONB） |
+| `sanwa_settings` | グローバルKV（alertEmail / colFormat） |
+
+trepro-pl の既存テーブル（staff / monthly_snapshot / salary_decision 等）とは完全分離。
 
 ### RLS方針
 現状は **公開ポリシー（誰でもCRUD可）**。デモ・社内利用前提。

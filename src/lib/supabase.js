@@ -1,14 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://zxwqavoeaekeimacpbrr.supabase.co'
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_jhzbNpqmR329zfsIZYE26g_1z8quvPr'
+// trepro-pl 既存プロジェクトに sanwa_* プレフィックスで同居
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ooigquspvrnvnuxfnrxm.supabase.co'
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_7gGPRUmjqN-w-TpSnP5fOg_RN5aN2ED'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // ─── Projects ─────────────────────────────────────────
 export async function listProjects() {
   const { data, error } = await supabase
-    .from('projects')
+    .from('sanwa_projects')
     .select('*')
     .order('updated_at', { ascending: false })
   if (error) throw error
@@ -17,7 +18,7 @@ export async function listProjects() {
 
 export async function createProject(meta) {
   const { data, error } = await supabase
-    .from('projects')
+    .from('sanwa_projects')
     .insert({
       name: meta.project || meta.name,
       date: meta.date,
@@ -33,7 +34,7 @@ export async function createProject(meta) {
 
 export async function updateProject(id, meta) {
   const { error } = await supabase
-    .from('projects')
+    .from('sanwa_projects')
     .update({
       name: meta.project || meta.name,
       date: meta.date,
@@ -46,14 +47,14 @@ export async function updateProject(id, meta) {
 }
 
 export async function deleteProject(id) {
-  const { error } = await supabase.from('projects').delete().eq('id', id)
+  const { error } = await supabase.from('sanwa_projects').delete().eq('id', id)
   if (error) throw error
 }
 
 // ─── Layout ───────────────────────────────────────────
 export async function getLayout(projectId) {
   const { data, error } = await supabase
-    .from('layouts')
+    .from('sanwa_layouts')
     .select('*')
     .eq('project_id', projectId)
     .maybeSingle()
@@ -65,13 +66,13 @@ export async function upsertLayout(projectId, { zones, shelves, labor }) {
   const existing = await getLayout(projectId)
   if (existing) {
     const { error } = await supabase
-      .from('layouts')
+      .from('sanwa_layouts')
       .update({ zones, shelves, labor })
       .eq('id', existing.id)
     if (error) throw error
   } else {
     const { error } = await supabase
-      .from('layouts')
+      .from('sanwa_layouts')
       .insert({ project_id: projectId, zones, shelves, labor })
     if (error) throw error
   }
@@ -80,7 +81,7 @@ export async function upsertLayout(projectId, { zones, shelves, labor }) {
 // ─── Parts ────────────────────────────────────────────
 export async function listParts(projectId) {
   const { data, error } = await supabase
-    .from('parts')
+    .from('sanwa_parts')
     .select('*')
     .eq('project_id', projectId)
     .order('created_at')
@@ -89,9 +90,8 @@ export async function listParts(projectId) {
 }
 
 export async function upsertParts(projectId, parts) {
-  // Delete existing then insert new (simplest for full sync)
   const { error: delErr } = await supabase
-    .from('parts')
+    .from('sanwa_parts')
     .delete()
     .eq('project_id', projectId)
   if (delErr) throw delErr
@@ -108,13 +108,13 @@ export async function upsertParts(projectId, parts) {
     unit_price: p.unit_price,
     cost_price: p.cost_price ?? null,
   }))
-  const { error } = await supabase.from('parts').insert(rows)
+  const { error } = await supabase.from('sanwa_parts').insert(rows)
   if (error) throw error
 }
 
 export async function updatePartStock(projectId, partId, stock) {
   const { error } = await supabase
-    .from('parts')
+    .from('sanwa_parts')
     .update({ stock })
     .eq('project_id', projectId)
     .eq('part_id', partId)
@@ -138,7 +138,7 @@ function toClientPart(row) {
 // ─── Order History ────────────────────────────────────
 export async function listOrderHistory(projectId) {
   const { data, error } = await supabase
-    .from('order_history')
+    .from('sanwa_order_history')
     .select('*')
     .eq('project_id', projectId)
     .order('ordered_at', { ascending: false })
@@ -154,7 +154,7 @@ export async function listOrderHistory(projectId) {
 }
 
 export async function createOrder(projectId, entry) {
-  const { error } = await supabase.from('order_history').insert({
+  const { error } = await supabase.from('sanwa_order_history').insert({
     project_id: projectId,
     ordered_at: new Date().toISOString(),
     total_amount: entry.totalAmount,
@@ -165,7 +165,7 @@ export async function createOrder(projectId, entry) {
 
 export async function deleteOrder(histId) {
   const { error } = await supabase
-    .from('order_history')
+    .from('sanwa_order_history')
     .delete()
     .eq('id', histId)
   if (error) throw error
@@ -173,7 +173,7 @@ export async function deleteOrder(histId) {
 
 export async function clearOrderHistory(projectId) {
   const { error } = await supabase
-    .from('order_history')
+    .from('sanwa_order_history')
     .delete()
     .eq('project_id', projectId)
   if (error) throw error
@@ -182,7 +182,7 @@ export async function clearOrderHistory(projectId) {
 // ─── Settings (key-value, global) ─────────────────────
 export async function getSetting(key) {
   const { data, error } = await supabase
-    .from('settings')
+    .from('sanwa_settings')
     .select('value')
     .eq('key', key)
     .maybeSingle()
@@ -192,15 +192,15 @@ export async function getSetting(key) {
 
 export async function setSetting(key, value) {
   const { error } = await supabase
-    .from('settings')
+    .from('sanwa_settings')
     .upsert({ key, value }, { onConflict: 'key' })
   if (error) throw error
 }
 
-// ─── Load full project data (layout + parts) ──────────
+// ─── Load full project data ───────────────────────────
 export async function loadFullProject(projectId) {
   const [project, layout, parts] = await Promise.all([
-    supabase.from('projects').select('*').eq('id', projectId).single().then(r => {
+    supabase.from('sanwa_projects').select('*').eq('id', projectId).single().then(r => {
       if (r.error) throw r.error; return r.data
     }),
     getLayout(projectId),
