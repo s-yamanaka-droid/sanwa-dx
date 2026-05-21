@@ -49,7 +49,55 @@
 .svg {
   display: block;
   background: #faf9f6;
+  user-select: none;
 }
+
+.zoomControls {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 4px 6px;
+  z-index: 10;
+}
+
+.zoomBtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all .1s;
+}
+.zoomBtn:hover { background: var(--surface2); color: var(--text); }
+
+.zoomLevel {
+  font-size: 11px;
+  color: var(--text2);
+  min-width: 36px;
+  text-align: center;
+}
+
+.zoomHint {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
+  margin-top: -8px;
+}
+
+.costPrice { color: var(--amber); font-weight: 500; }
 
 .detailPanel {
   position: absolute;

@@ -51,14 +51,14 @@
     { "id": "S019", "zone": "zone-daily", "x": 556, "y": 248, "w": 60, "h": 130, "type": "SH-1950", "label": "日用④" }
   ],
   "parts": [
-    { "id": "SH-1950",  "name": "棚柱ユニット 1950H",   "spec": "1800H+在庫棚150H",   "qty": 47,  "unit": "本", "category": "主材",   "stock": 52,  "unit_price": 8800 },
-    { "id": "SH-970W",  "name": "棚板 970mm幅",         "spec": "スチール製 白塗装",  "qty": 188, "unit": "枚", "category": "主材",   "stock": 120, "unit_price": 2200 },
-    { "id": "SH-1500W", "name": "棚板 1500mm幅",        "spec": "スチール製 白塗装",  "qty": 94,  "unit": "枚", "category": "主材",   "stock": 30,  "unit_price": 3100 },
-    { "id": "BK-300",   "name": "ベースアンカー",        "spec": "M12×300mm",         "qty": 94,  "unit": "個", "category": "固定材", "stock": 94,  "unit_price": 450 },
-    { "id": "WR-24",    "name": "価格レール 24スロット", "spec": "標準型 ホワイト",    "qty": 282, "unit": "本", "category": "陳列部材","stock": 310, "unit_price": 380 },
-    { "id": "LB-STD",   "name": "棚番ラベルホルダー",    "spec": "A4横 透明",          "qty": 564, "unit": "個", "category": "陳列部材","stock": 200, "unit_price": 120 },
-    { "id": "BT-SET",   "name": "ボルト・ナットセット",  "spec": "M8×20mm 亜鉛メッキ","qty": 800, "unit": "組", "category": "締結材", "stock": 1200,"unit_price": 28 },
-    { "id": "FL-TAPE",  "name": "養生テープ",            "spec": "50mm×50m 緑",        "qty": 24,  "unit": "巻", "category": "施工材", "stock": 40,  "unit_price": 220 }
+    { "id": "SH-1950",  "name": "棚柱ユニット 1950H",   "spec": "1800H+在庫棚150H",   "qty": 47,  "unit": "本", "category": "主材",   "stock": 52,  "unit_price": 8800, "cost_price": 5800 },
+    { "id": "SH-970W",  "name": "棚板 970mm幅",         "spec": "スチール製 白塗装",  "qty": 188, "unit": "枚", "category": "主材",   "stock": 120, "unit_price": 2200, "cost_price": 1400 },
+    { "id": "SH-1500W", "name": "棚板 1500mm幅",        "spec": "スチール製 白塗装",  "qty": 94,  "unit": "枚", "category": "主材",   "stock": 30,  "unit_price": 3100, "cost_price": 2000 },
+    { "id": "BK-300",   "name": "ベースアンカー",        "spec": "M12×300mm",         "qty": 94,  "unit": "個", "category": "固定材", "stock": 94,  "unit_price": 450,  "cost_price": 280 },
+    { "id": "WR-24",    "name": "価格レール 24スロット", "spec": "標準型 ホワイト",    "qty": 282, "unit": "本", "category": "陳列部材","stock": 310, "unit_price": 380,  "cost_price": 220 },
+    { "id": "LB-STD",   "name": "棚番ラベルホルダー",    "spec": "A4横 透明",          "qty": 564, "unit": "個", "category": "陳列部材","stock": 200, "unit_price": 120,  "cost_price": null },
+    { "id": "BT-SET",   "name": "ボルト・ナットセット",  "spec": "M8×20mm 亜鉛メッキ","qty": 800, "unit": "組", "category": "締結材", "stock": 1200,"unit_price": 28,   "cost_price": 16 },
+    { "id": "FL-TAPE",  "name": "養生テープ",            "spec": "50mm×50m 緑",        "qty": 24,  "unit": "巻", "category": "施工材", "stock": 40,  "unit_price": 220,  "cost_price": null }
   ],
   "labor": {
     "total_man_days": 28,

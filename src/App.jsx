@@ -5,16 +5,18 @@ import FloorMap2D from './components/FloorMap2D'
 import PartsList from './components/PartsList'
 import Inventory from './components/Inventory'
 import JsonInput from './components/JsonInput'
+import PdfReader from './components/PdfReader'
 import sampleData from './data/sampleLayout.json'
 import styles from './App.module.css'
 
 const TABS = [
-  { id: 'intro',     label: '🏠 概要' },
+  { id: 'intro',     label: '概要' },
   { id: 'input',     label: '① 図面取込' },
   { id: 'floormap',  label: '② 2Dフロアマップ' },
   { id: 'parts',     label: '③ 資材リスト' },
   { id: 'inventory', label: '④ 在庫・発注' },
   { id: 'estimate',  label: '⑤ 見積書' },
+  { id: 'pdfreader', label: '⑥ 手書き取込' },
 ]
 
 export default function App() {
@@ -87,6 +89,9 @@ export default function App() {
         )}
         {activeTab === 'estimate' && (
           <EstimateSheet data={layoutData} />
+        )}
+        {activeTab === 'pdfreader' && (
+          <PdfReader onReflect={() => setActiveTab('inventory')} />
         )}
       </main>
     </div>

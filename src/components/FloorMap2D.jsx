@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import styles from './FloorMap2D.module.css'
 
 const ZONE_COLORS = {
@@ -13,19 +13,114 @@ const SHELF_COLORS = {
 }
 
 const SCALE = 1.4
+const MAP_W = 680
+const MAP_H = 480
 
 export default function FloorMap2D({ data }) {
   const [selectedShelf, setSelectedShelf] = useState(null)
   const [hoveredZone, setHoveredZone] = useState(null)
 
-  const { zones, shelves, meta, labor } = data
+  // viewBox state: [x, y, w, h]
+  const [vb, setVb] = useState([0, 0, MAP_W, MAP_H])
+  const vbRef = useRef([0, 0, MAP_W, MAP_H])
 
-  const mapW = 680
-  const mapH = 480
+  // drag state
+  const svgRef = useRef(null)
+  const dragRef = useRef(null)
+  const hasDraggedRef = useRef(false)
+
+  const { zones, shelves, meta, labor } = data
 
   const selectedPart = selectedShelf
     ? data.parts.find(p => p.id === selectedShelf.type)
     : null
+
+  // Keep vbRef in sync
+  useEffect(() => { vbRef.current = vb }, [vb])
+
+  // Wheel zoom — must use non-passive listener
+  useEffect(() => {
+    const el = svgRef.current
+    if (!el) return
+    const handler = (e) => {
+      e.preventDefault()
+      const rect = el.getBoundingClientRect()
+      const [vx, vy, vw, vh] = vbRef.current
+      // mouse in SVG coords
+      const mx = vx + ((e.clientX - rect.left) / rect.width) * vw
+      const my = vy + ((e.clientY - rect.top) / rect.height) * vh
+      const factor = e.deltaY > 0 ? 1.12 : 0.89
+      const newW = Math.min(MAP_W * 3, Math.max(MAP_W * 0.25, vw * factor))
+      const newH = Math.min(MAP_H * 3, Math.max(MAP_H * 0.25, vh * factor))
+      const ratio = newW / vw
+      const newX = Math.max(0, Math.min(MAP_W - newW, mx - (mx - vx) * ratio))
+      const newY = Math.max(0, Math.min(MAP_H - newH, my - (my - vy) * ratio))
+      const next = [newX, newY, newW, newH]
+      vbRef.current = next
+      setVb(next)
+    }
+    el.addEventListener('wheel', handler, { passive: false })
+    return () => el.removeEventListener('wheel', handler)
+  }, [])
+
+  // Drag pan
+  const onMouseDown = useCallback((e) => {
+    if (e.button !== 0) return
+    dragRef.current = { startX: e.clientX, startY: e.clientY, startVb: [...vbRef.current] }
+    hasDraggedRef.current = false
+  }, [])
+
+  const onMouseMove = useCallback((e) => {
+    if (!dragRef.current) return
+    const dx = e.clientX - dragRef.current.startX
+    const dy = e.clientY - dragRef.current.startY
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasDraggedRef.current = true
+    const rect = svgRef.current.getBoundingClientRect()
+    const [, , vw, vh] = dragRef.current.startVb
+    const scaleX = vw / rect.width
+    const scaleY = vh / rect.height
+    const ox = dragRef.current.startVb[0] - dx * scaleX
+    const oy = dragRef.current.startVb[1] - dy * scaleY
+    const nx = Math.max(0, Math.min(MAP_W - vw, ox))
+    const ny = Math.max(0, Math.min(MAP_H - vh, oy))
+    const next = [nx, ny, vw, vh]
+    vbRef.current = next
+    setVb(next)
+  }, [])
+
+  const onMouseUp = useCallback(() => { dragRef.current = null }, [])
+
+  const handleShelfClick = useCallback((e, shelf) => {
+    if (hasDraggedRef.current) return
+    e.stopPropagation()
+    setSelectedShelf(prev => prev?.id === shelf.id ? null : shelf)
+  }, [])
+
+  const resetZoom = () => {
+    const next = [0, 0, MAP_W, MAP_H]
+    vbRef.current = next
+    setVb(next)
+  }
+
+  const zoomIn = () => {
+    const [vx, vy, vw, vh] = vbRef.current
+    const cx = vx + vw / 2, cy = vy + vh / 2
+    const newW = Math.max(MAP_W * 0.25, vw * 0.75)
+    const newH = Math.max(MAP_H * 0.25, vh * 0.75)
+    const next = [Math.max(0, cx - newW / 2), Math.max(0, cy - newH / 2), newW, newH]
+    vbRef.current = next; setVb(next)
+  }
+
+  const zoomOut = () => {
+    const [vx, vy, vw, vh] = vbRef.current
+    const cx = vx + vw / 2, cy = vy + vh / 2
+    const newW = Math.min(MAP_W * 3, vw / 0.75)
+    const newH = Math.min(MAP_H * 3, vh / 0.75)
+    const next = [Math.max(0, cx - newW / 2), Math.max(0, cy - newH / 2), newW, newH]
+    vbRef.current = next; setVb(next)
+  }
+
+  const zoomLevel = Math.round((MAP_W / vb[2]) * 100)
 
   return (
     <div className={styles.wrap}>
@@ -52,18 +147,38 @@ export default function FloorMap2D({ data }) {
       </div>
 
       <div className={styles.mapWrap}>
+        {/* Zoom controls */}
+        <div className={styles.zoomControls}>
+          <button className={styles.zoomBtn} onClick={zoomIn} title="ズームイン">
+            <svg width="14" height="14" viewBox="0 0 14 14"><line x1="7" y1="2" x2="7" y2="12" stroke="currentColor" strokeWidth="1.8"/><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" strokeWidth="1.8"/></svg>
+          </button>
+          <span className={styles.zoomLevel}>{zoomLevel}%</span>
+          <button className={styles.zoomBtn} onClick={zoomOut} title="ズームアウト">
+            <svg width="14" height="14" viewBox="0 0 14 14"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" strokeWidth="1.8"/></svg>
+          </button>
+          <button className={styles.zoomBtn} onClick={resetZoom} title="リセット" style={{ fontSize: '10px', padding: '0 6px' }}>
+            全体
+          </button>
+        </div>
+
         <svg
+          ref={svgRef}
           width="100%"
-          viewBox={`0 0 ${mapW} ${mapH}`}
+          viewBox={`${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}`}
           className={styles.svg}
+          style={{ cursor: dragRef.current ? 'grabbing' : 'grab' }}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
         >
           {/* Grid */}
-          {Array.from({ length: Math.floor(mapW / 60) }).map((_, i) => (
-            <line key={`gx${i}`} x1={i * 60} y1={0} x2={i * 60} y2={mapH}
+          {Array.from({ length: Math.floor(MAP_W / 60) }).map((_, i) => (
+            <line key={`gx${i}`} x1={i * 60} y1={0} x2={i * 60} y2={MAP_H}
               stroke="#e8e4dc" strokeWidth="0.5" />
           ))}
-          {Array.from({ length: Math.floor(mapH / 60) }).map((_, i) => (
-            <line key={`gy${i}`} x1={0} y1={i * 60} x2={mapW} y2={i * 60}
+          {Array.from({ length: Math.floor(MAP_H / 60) }).map((_, i) => (
+            <line key={`gy${i}`} x1={0} y1={i * 60} x2={MAP_W} y2={i * 60}
               stroke="#e8e4dc" strokeWidth="0.5" />
           ))}
 
@@ -104,7 +219,7 @@ export default function FloorMap2D({ data }) {
             const isSelected = selectedShelf?.id === shelf.id
             return (
               <g key={shelf.id}
-                onClick={() => setSelectedShelf(isSelected ? null : shelf)}
+                onClick={(e) => handleShelfClick(e, shelf)}
                 style={{ cursor: 'pointer' }}
               >
                 <rect
@@ -138,10 +253,10 @@ export default function FloorMap2D({ data }) {
 
           {/* Scale bar */}
           <g>
-            <line x1="20" y1={mapH - 20} x2="90" y2={mapH - 20} stroke="var(--text2)" strokeWidth="1.5" />
-            <line x1="20" y1={mapH - 25} x2="20" y2={mapH - 15} stroke="var(--text2)" strokeWidth="1.5" />
-            <line x1="90" y1={mapH - 25} x2="90" y2={mapH - 15} stroke="var(--text2)" strokeWidth="1.5" />
-            <text x="55" y={mapH - 25} textAnchor="middle" fontSize="9" fill="var(--text2)" fontFamily="var(--font)">
+            <line x1="20" y1={MAP_H - 20} x2="90" y2={MAP_H - 20} stroke="var(--text2)" strokeWidth="1.5" />
+            <line x1="20" y1={MAP_H - 25} x2="20" y2={MAP_H - 15} stroke="var(--text2)" strokeWidth="1.5" />
+            <line x1="90" y1={MAP_H - 25} x2="90" y2={MAP_H - 15} stroke="var(--text2)" strokeWidth="1.5" />
+            <text x="55" y={MAP_H - 25} textAnchor="middle" fontSize="9" fill="var(--text2)" fontFamily="var(--font)">
               50m
             </text>
           </g>
@@ -176,6 +291,9 @@ export default function FloorMap2D({ data }) {
                       </span>
                     </td></tr>
                     <tr><td>単価</td><td>¥{selectedPart.unit_price.toLocaleString()}</td></tr>
+                    {selectedPart.cost_price != null && (
+                      <tr><td>原価</td><td className={styles.costPrice}>¥{selectedPart.cost_price.toLocaleString()}</td></tr>
+                    )}
                   </tbody>
                 </table>
               </>
@@ -183,6 +301,9 @@ export default function FloorMap2D({ data }) {
           </div>
         )}
       </div>
+
+      {/* Zoom hint */}
+      <div className={styles.zoomHint}>ホイールでズーム、ドラッグでパン、棚をクリックで詳細表示</div>
 
       {/* Labor breakdown */}
       <div className={styles.laborRow}>
