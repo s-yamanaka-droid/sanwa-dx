@@ -30,6 +30,11 @@
   gap: 8px;
 }
 
+.gateLogoImg {
+  height: 56px;
+  width: auto;
+}
+
 .gateTitle {
   font-size: 18px;
   color: var(--text);

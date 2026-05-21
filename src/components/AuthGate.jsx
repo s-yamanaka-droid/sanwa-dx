@@ -96,16 +96,9 @@ export default function AuthGate({ children }) {
       <div className={styles.gateWrap}>
         <div className={styles.gateCard}>
           <div className={styles.gateLogo}>
-            <svg width="38" height="38" viewBox="0 0 22 22" fill="none">
-              <rect x="2" y="2" width="8" height="8" rx="2" fill="#1a5fd4" opacity=".9"/>
-              <rect x="12" y="2" width="8" height="8" rx="2" fill="#1a5fd4" opacity=".5"/>
-              <rect x="2" y="12" width="8" height="8" rx="2" fill="#1a5fd4" opacity=".5"/>
-              <rect x="12" y="12" width="8" height="8" rx="2" fill="#0a7c4e" opacity=".9"/>
-            </svg>
-            <div className={styles.gateTitle}>
-              <strong>三和商研</strong> DX Platform
-            </div>
-            <div className={styles.gateSub}>什器レイアウト管理システム</div>
+            <img src="/brand/sanwashouken-logo.png" alt="株式会社三和商研" className={styles.gateLogoImg} />
+            <div className={styles.gateTitle}>DX Platform</div>
+            <div className={styles.gateSub}>店舗什器レイアウト管理システム</div>
           </div>
 
           {sent ? (
