@@ -1,8 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-// trepro-pl 既存プロジェクトに sanwa_* プレフィックスで同居
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ooigquspvrnvnuxfnrxm.supabase.co'
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_7gGPRUmjqN-w-TpSnP5fOg_RN5aN2ED'
+// 既存 trefinder プロジェクト（トレプロ組織）に sanwa_* プレフィックスで同居
+// 新規DB作成しない方針。trefinder の既存テーブル(users/diagnosis_results等)とは
+// プレフィックスで完全分離。追加コスト¥0。
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://heylrpbvrdhxziciokmg.supabase.co'
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_HG9VT11GVlXmk37F7FgS4g_cvkvUBN0'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 

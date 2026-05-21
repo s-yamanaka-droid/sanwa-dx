@@ -8,15 +8,15 @@
 
 ## Supabase（重要・最初に読め）
 
-**新規DBは作らず、既存 trepro-pl プロジェクトに同居**（追加コスト¥0）
+**新規DBは作らず、既存 trefinder プロジェクトに同居**（追加コスト¥0）
 
 | 項目 | 値 |
 |---|---|
-| プロジェクトID | `ooigquspvrnvnuxfnrxm`（trepro-pl 既存） |
-| URL | https://ooigquspvrnvnuxfnrxm.supabase.co |
-| Region | ap-southeast-1 |
+| プロジェクトID | `heylrpbvrdhxziciokmg`（trefinder 既存） |
+| URL | https://heylrpbvrdhxziciokmg.supabase.co |
+| Region | ap-northeast-1 |
 | 請求先 | トレプロ組織（既存プロジェクト・追加料金なし） |
-| 公開キー（anon） | `sb_publishable_7gGPRUmjqN-w-TpSnP5fOg_RN5aN2ED` |
+| 公開キー（anon） | `sb_publishable_HG9VT11GVlXmk37F7FgS4g_cvkvUBN0` |
 
 ### テーブル構成（`sanwa_` プレフィックスで分離）
 | テーブル | 役割 |
@@ -27,7 +27,10 @@
 | `sanwa_order_history` | 発注履歴（items は JSONB） |
 | `sanwa_settings` | グローバルKV（alertEmail / colFormat） |
 
-trepro-pl の既存テーブル（staff / monthly_snapshot / salary_decision 等）とは完全分離。
+trefinder の既存テーブル（users / diagnosis_results / invite_links 等）とは完全分離。
+
+**注：** trepro-pl は REST API がダッシュボードで無効化されていたため、
+同じトレプロ組織内の trefinder を選択。
 
 ### RLS方針
 現状は **公開ポリシー（誰でもCRUD可）**。デモ・社内利用前提。
