@@ -122,17 +122,34 @@
   gap: 12px;
   text-align: center;
 }
-.sentIcon { padding: 8px; }
+.sentIcon { padding: 8px; align-self: center; }
 .sentTitle {
   font-size: 16px;
   font-weight: 600;
-  color: var(--green);
+  color: var(--accent);
+  text-align: center;
 }
 .sentMsg {
   font-size: 13px;
   color: var(--text2);
   line-height: 1.7;
+  text-align: center;
 }
+
+.otpInput {
+  padding: 12px 14px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 22px;
+  font-family: var(--mono);
+  font-weight: 600;
+  outline: none;
+  text-align: center;
+  letter-spacing: 0.4em;
+  transition: border-color .1s;
+}
+.otpInput:focus { border-color: var(--accent); }
+.otpInput:disabled { background: var(--surface2); }
 
 .denyBox {
   font-size: 13px;

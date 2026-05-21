@@ -10,6 +10,9 @@ export default function AuthGate({ children }) {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  // OTP コード入力モード
+  const [otp, setOtp] = useState('')
+  const [verifying, setVerifying] = useState(false)
 
   // Initial session + auth state listener
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function AuthGate({ children }) {
     })()
   }, [session])
 
-  const sendMagicLink = async (e) => {
+  const sendOtpCode = async (e) => {
     e.preventDefault()
     if (!email.trim()) return
     setSending(true)
@@ -64,22 +67,51 @@ export default function AuthGate({ children }) {
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
         options: {
-          emailRedirectTo: window.location.origin,
+          // emailRedirectTo を指定しないと Magic Link ではなく OTP コードのみが届く
+          shouldCreateUser: true,
         },
       })
       if (error) throw error
       setSent(true)
     } catch (e) {
-      setError(e.message || 'ログインリンクの送信に失敗しました')
+      setError(e.message || 'コード送信に失敗しました')
     } finally {
       setSending(false)
     }
+  }
+
+  const verifyOtpCode = async (e) => {
+    e.preventDefault()
+    const code = otp.trim()
+    if (!code) return
+    setVerifying(true)
+    setError('')
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: code,
+        type: 'email',
+      })
+      if (error) throw error
+      // onAuthStateChange で session が更新される
+    } catch (e) {
+      setError(e.message || 'コードが正しくありません')
+    } finally {
+      setVerifying(false)
+    }
+  }
+
+  const resetFlow = () => {
+    setSent(false)
+    setOtp('')
+    setError('')
   }
 
   const signOut = async () => {
     await supabase.auth.signOut()
     setEmail('')
     setSent(false)
+    setOtp('')
   }
 
   if (loading) {
@@ -102,24 +134,45 @@ export default function AuthGate({ children }) {
           </div>
 
           {sent ? (
-            <div className={styles.sentBox}>
+            <form onSubmit={verifyOtpCode} className={styles.gateForm}>
               <div className={styles.sentIcon}>
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="22" r="20" stroke="#0a7c4e" strokeWidth="2"/>
-                  <path d="M14 22l6 6 12-12" stroke="#0a7c4e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+                  <rect x="4" y="10" width="36" height="26" rx="3" stroke="#006bb4" strokeWidth="2"/>
+                  <path d="M4 14l18 12 18-12" stroke="#006bb4" strokeWidth="2" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <div className={styles.sentTitle}>メールを送信しました</div>
+              <div className={styles.sentTitle}>コードを送信しました</div>
               <div className={styles.sentMsg}>
-                <strong>{email}</strong> 宛にログインリンクを送信しました。<br />
-                受信トレイをご確認ください。
+                <strong>{email}</strong><br />
+                受信メール内の <strong>6桁コード</strong> を入力してください
               </div>
-              <button className={styles.linkBtn} onClick={() => setSent(false)}>
-                別のメールアドレスで送信
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                className={styles.otpInput}
+                value={otp}
+                onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                required
+                autoFocus
+                disabled={verifying}
+              />
+              {error && <div className={styles.gateError}>{error}</div>}
+              <button
+                type="submit"
+                className={styles.gateBtn}
+                disabled={verifying || otp.length !== 6}
+              >
+                {verifying ? '確認中…' : 'ログイン'}
               </button>
-            </div>
+              <button type="button" className={styles.linkBtn} onClick={resetFlow}>
+                別のメールアドレスでやり直す
+              </button>
+            </form>
           ) : (
-            <form onSubmit={sendMagicLink} className={styles.gateForm}>
+            <form onSubmit={sendOtpCode} className={styles.gateForm}>
               <div className={styles.gateLabel}>登録されたメールアドレスを入力</div>
               <input
                 type="email"
@@ -137,10 +190,10 @@ export default function AuthGate({ children }) {
                 className={styles.gateBtn}
                 disabled={sending || !email.trim()}
               >
-                {sending ? '送信中…' : 'ログインリンクを受け取る'}
+                {sending ? '送信中…' : '6桁コードを受け取る'}
               </button>
               <div className={styles.gateNote}>
-                登録メールアドレスにワンタイムリンクが届きます。<br />
+                登録メールアドレスに6桁のワンタイムコードが届きます。<br />
                 アクセスは記録されます。
               </div>
             </form>
