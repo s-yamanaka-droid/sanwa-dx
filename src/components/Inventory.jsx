@@ -1,47 +1,77 @@
 import { useState, useEffect } from 'react'
 import * as XLSX from 'xlsx'
+import {
+  listOrderHistory,
+  createOrder,
+  deleteOrder,
+  clearOrderHistory,
+  getSetting,
+  setSetting,
+} from '../lib/supabase'
 import styles from './Inventory.module.css'
 
 const DEFAULT_COL_FORMAT = [
-  { key: 'id',         label: '品番',       on: true  },
-  { key: 'name',       label: '品名',       on: true  },
-  { key: 'spec',       label: '仕様',       on: true  },
-  { key: 'qty',        label: '発注数',     on: true  },
-  { key: 'unit',       label: '単位',       on: true  },
-  { key: 'unit_price', label: '単価(円)',   on: true  },
-  { key: 'total',      label: '発注金額(円)',on: true  },
+  { key: 'id',         label: '品番',       on: true },
+  { key: 'name',       label: '品名',       on: true },
+  { key: 'spec',       label: '仕様',       on: true },
+  { key: 'qty',        label: '発注数',     on: true },
+  { key: 'unit',       label: '単位',       on: true },
+  { key: 'unit_price', label: '単価(円)',   on: true },
+  { key: 'total',      label: '発注金額(円)',on: true },
 ]
 
-export default function Inventory({ data }) {
+export default function Inventory({ data, projectId, onReload }) {
   const [orderList, setOrderList] = useState([])
   const [ordered, setOrdered] = useState({})
 
-  // localStorage: alert email
-  const [alertEmail, setAlertEmail] = useState(() =>
-    localStorage.getItem('sanwa_alertEmail') || ''
-  )
+  // Settings (Supabase + localStorage fallback)
+  const [alertEmail, setAlertEmail] = useState('')
   const [emailEditing, setEmailEditing] = useState(false)
   const [emailDraft, setEmailDraft] = useState('')
 
-  // localStorage: order history
-  const [orderHistory, setOrderHistory] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('sanwa_orderHistory') || '[]') } catch { return [] }
-  })
+  const [orderHistory, setOrderHistory] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(false)
 
-  // localStorage: Excel col format
-  const [colFormat, setColFormat] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('sanwa_colFormat') || 'null')
-      return saved || DEFAULT_COL_FORMAT
-    } catch { return DEFAULT_COL_FORMAT }
-  })
+  const [colFormat, setColFormat] = useState(DEFAULT_COL_FORMAT)
   const [showColConfig, setShowColConfig] = useState(false)
 
-  // 2-step delete confirm
   const [confirmClear, setConfirmClear] = useState(false)
   const [pendingDeleteId, setPendingDeleteId] = useState(null)
 
   const { parts } = data
+
+  // Initial load: settings + history
+  useEffect(() => {
+    (async () => {
+      try {
+        const [email, colFmt] = await Promise.all([
+          getSetting('alertEmail').catch(() => null),
+          getSetting('colFormat').catch(() => null),
+        ])
+        setAlertEmail(email || localStorage.getItem('sanwa_alertEmail') || '')
+        if (colFmt) {
+          try { setColFormat(JSON.parse(colFmt)) } catch { /* keep default */ }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    if (!projectId) return
+    (async () => {
+      setHistoryLoading(true)
+      try {
+        const h = await listOrderHistory(projectId)
+        setOrderHistory(h)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setHistoryLoading(false)
+      }
+    })()
+  }, [projectId])
 
   const needOrder = parts.filter(p => p.stock < p.qty)
   const sufficient = parts.filter(p => p.stock >= p.qty)
@@ -60,29 +90,25 @@ export default function Inventory({ data }) {
     return sum + Math.max(0, p.qty - p.stock) * p.unit_price
   }, 0)
 
-  const placeOrder = () => {
-    const now = new Date()
-    const entry = {
-      histId: `ORD-${now.getTime()}`,
-      date: now.toLocaleString('ja-JP'),
-      isoDate: now.toISOString(),
-      project: data.meta.project,
-      items: orderList.map(id => {
-        const p = parts.find(x => x.id === id)
-        const qty = Math.max(0, p.qty - p.stock)
-        return { id: p.id, name: p.name, spec: p.spec, qty, unit: p.unit, unit_price: p.unit_price, total: qty * p.unit_price }
-      }),
-      totalAmount: totalOrderCost,
+  const placeOrder = async () => {
+    if (orderList.length === 0 || !projectId) return
+    const items = orderList.map(id => {
+      const p = parts.find(x => x.id === id)
+      const qty = Math.max(0, p.qty - p.stock)
+      return { id: p.id, name: p.name, spec: p.spec, qty, unit: p.unit, unit_price: p.unit_price, total: qty * p.unit_price }
+    })
+    try {
+      await createOrder(projectId, { totalAmount: totalOrderCost, items })
+      const ts = new Date().toLocaleString('ja-JP')
+      const newOrdered = {}
+      orderList.forEach(id => { newOrdered[id] = ts })
+      setOrdered(prev => ({ ...prev, ...newOrdered }))
+      setOrderList([])
+      const h = await listOrderHistory(projectId)
+      setOrderHistory(h)
+    } catch (e) {
+      alert('発注の保存に失敗しました: ' + e.message)
     }
-    const next = [entry, ...orderHistory]
-    setOrderHistory(next)
-    localStorage.setItem('sanwa_orderHistory', JSON.stringify(next))
-
-    const ts = now.toLocaleString('ja-JP')
-    const newOrdered = {}
-    orderList.forEach(id => { newOrdered[id] = ts })
-    setOrdered(prev => ({ ...prev, ...newOrdered }))
-    setOrderList([])
   }
 
   const sendOrderMail = () => {
@@ -140,7 +166,6 @@ export default function Inventory({ data }) {
       const qty = Math.max(0, p.qty - p.stock)
       return s + qty * p.unit_price
     }, 0)
-    // Totals row
     const totalRow = activeCols.map(c => {
       if (c.key === 'total') return total
       if (c.key === 'unit_price') return '合計'
@@ -164,7 +189,7 @@ export default function Inventory({ data }) {
       h.items.forEach((item, i) => {
         rows.push([
           i === 0 ? h.date : '',
-          i === 0 ? h.project : '',
+          i === 0 ? (h.project || data.meta.project) : '',
           item.id, item.name, item.qty, item.unit, item.unit_price, item.total
         ])
       })
@@ -178,29 +203,46 @@ export default function Inventory({ data }) {
     XLSX.writeFile(wb, `三和商研_発注履歴_${today}.xlsx`)
   }
 
-  const saveEmail = () => {
-    localStorage.setItem('sanwa_alertEmail', emailDraft)
+  const saveEmail = async () => {
     setAlertEmail(emailDraft)
     setEmailEditing(false)
+    try {
+      await setSetting('alertEmail', emailDraft)
+      localStorage.setItem('sanwa_alertEmail', emailDraft)  // フォールバック維持
+    } catch (e) {
+      console.error(e)
+    }
   }
 
-  const toggleCol = (key) => {
+  const toggleCol = async (key) => {
     const next = colFormat.map(c => c.key === key ? { ...c, on: !c.on } : c)
     setColFormat(next)
-    localStorage.setItem('sanwa_colFormat', JSON.stringify(next))
+    try {
+      await setSetting('colFormat', JSON.stringify(next))
+    } catch (e) {
+      console.error(e)
+    }
   }
 
-  const deleteHistEntry = (histId) => {
-    const next = orderHistory.filter(h => h.histId !== histId)
-    setOrderHistory(next)
-    localStorage.setItem('sanwa_orderHistory', JSON.stringify(next))
-    setPendingDeleteId(null)
+  const deleteHistEntry = async (histId) => {
+    try {
+      await deleteOrder(histId)
+      setOrderHistory(orderHistory.filter(h => h.histId !== histId))
+      setPendingDeleteId(null)
+    } catch (e) {
+      alert('削除に失敗しました: ' + e.message)
+    }
   }
 
-  const clearHistory = () => {
-    setOrderHistory([])
-    localStorage.removeItem('sanwa_orderHistory')
-    setConfirmClear(false)
+  const clearHistory = async () => {
+    if (!projectId) return
+    try {
+      await clearOrderHistory(projectId)
+      setOrderHistory([])
+      setConfirmClear(false)
+    } catch (e) {
+      alert('履歴削除に失敗しました: ' + e.message)
+    }
   }
 
   return (
@@ -227,7 +269,7 @@ export default function Inventory({ data }) {
         </div>
       </div>
 
-      {/* Alert email setting */}
+      {/* Alert email */}
       <div className={styles.alertBar}>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <circle cx="7" cy="7" r="6" stroke="var(--accent)" strokeWidth="1.4"/>
@@ -286,10 +328,9 @@ export default function Inventory({ data }) {
             </div>
           </div>
 
-          {/* Column config */}
           {showColConfig && (
             <div className={styles.colConfig}>
-              <div className={styles.colConfigTitle}>Excel出力 列設定</div>
+              <div className={styles.colConfigTitle}>Excel出力 列設定（クラウド保存）</div>
               <div className={styles.colConfigItems}>
                 {colFormat.map(c => (
                   <label key={c.key} className={styles.colItem}>
@@ -404,7 +445,7 @@ export default function Inventory({ data }) {
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <span className={styles.histDot} />
-            発注履歴 ({orderHistory.length}件)
+            発注履歴 ({orderHistory.length}件){historyLoading && ' …'}
           </div>
           <div className={styles.sectionActions}>
             {orderHistory.length > 0 && (
@@ -425,7 +466,7 @@ export default function Inventory({ data }) {
         </div>
 
         {orderHistory.length === 0 ? (
-          <div className={styles.emptyHist}>発注履歴はありません</div>
+          <div className={styles.emptyHist}>{historyLoading ? '読み込み中…' : '発注履歴はありません'}</div>
         ) : (
           <div className={styles.histList}>
             {orderHistory.map(h => (
@@ -433,7 +474,7 @@ export default function Inventory({ data }) {
                 <div className={styles.histCardHeader}>
                   <div>
                     <span className={styles.histDate}>{h.date}</span>
-                    <span className={styles.histProject}>{h.project}</span>
+                    <span className={styles.histProject}>{h.project || data.meta.project}</span>
                   </div>
                   <div className={styles.histRight}>
                     <span className={styles.histTotal}>¥{h.totalAmount.toLocaleString()}</span>

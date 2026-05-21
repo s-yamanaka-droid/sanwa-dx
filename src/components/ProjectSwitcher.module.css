@@ -1,0 +1,181 @@
+.wrap { position: relative; }
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all .1s;
+  font-family: var(--font);
+}
+.trigger:hover { background: var(--surface2); }
+
+.triggerLabel {
+  font-weight: 600;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text2);
+  font-weight: 600;
+}
+
+.newBtn {
+  padding: 4px 10px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.newBtn:hover { opacity: .9; }
+
+.createForm {
+  padding: 10px 14px;
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input {
+  flex: 1;
+  min-width: 120px;
+  padding: 5px 8px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font);
+  outline: none;
+}
+.input:focus { border-color: var(--accent); }
+
+.btnPrimary {
+  padding: 5px 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btnPrimary:hover { opacity: .9; }
+
+.btnGhost {
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  cursor: pointer;
+}
+.btnGhost:hover { background: var(--surface2); }
+
+.btnDanger {
+  padding: 4px 10px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.list { max-height: 340px; overflow-y: auto; }
+
+.empty {
+  padding: 30px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.item {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+}
+.item:last-child { border-bottom: none; }
+.item:hover { background: var(--surface2); }
+
+.itemActive { background: var(--accent-bg); }
+.itemActive:hover { background: var(--accent-bg); }
+
+.itemMain {
+  flex: 1;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.itemMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  padding: 0 12px;
+  color: var(--text3);
+  font-size: 12px;
+  cursor: pointer;
+}
+.deleteBtn:hover { color: var(--red); }
+
+.confirmBox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 8px;
+}
