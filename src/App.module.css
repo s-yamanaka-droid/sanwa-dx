@@ -121,6 +121,35 @@
   margin: 0 auto;
 }
 
+.userBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--surface2);
+  color: var(--text2);
+  border-radius: 99px;
+  font-size: 11px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .1s;
+}
+.logoutBtn:hover { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+
 .cloudBadge {
   display: inline-flex;
   align-items: center;

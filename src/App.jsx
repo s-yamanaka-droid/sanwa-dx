@@ -7,6 +7,7 @@ import Inventory from './components/Inventory'
 import JsonInput from './components/JsonInput'
 import PdfReader from './components/PdfReader'
 import ProjectSwitcher from './components/ProjectSwitcher'
+import AuthGate from './components/AuthGate'
 import sampleData from './data/sampleLayout.json'
 import {
   listProjects,
@@ -28,7 +29,7 @@ const TABS = [
   { id: 'pdfreader', label: '⑥ 手書き取込' },
 ]
 
-export default function App() {
+function AppCore({ session, signOut }) {
   const [activeTab, setActiveTab] = useState('intro')
   const [projectId, setProjectId] = useState(() => localStorage.getItem('sanwa_currentProjectId') || null)
   const [layoutData, setLayoutData] = useState(null)
@@ -197,6 +198,14 @@ export default function App() {
           <span className={styles.chip}>
             売場 {layoutData.meta.area_sqm?.toLocaleString() || 0}㎡
           </span>
+          <span className={styles.userBadge}>
+            {session?.user?.email}
+          </span>
+          <button className={styles.logoutBtn} onClick={signOut} title="ログアウト">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M6 10v2H2V2h4v2M9 4l3 3-3 3M5 7h7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -246,5 +255,14 @@ export default function App() {
         )}
       </main>
     </div>
+  )
+}
+
+
+export default function App() {
+  return (
+    <AuthGate>
+      {({ session, signOut }) => <AppCore session={session} signOut={signOut} />}
+    </AuthGate>
   )
 }
